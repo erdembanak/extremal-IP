@@ -1,0 +1,444 @@
+//============================================================================
+// Name        : nauty-thesis.cpp
+// Author      :
+// Version     :
+// Copyright   : Your copyright notice
+// Description : Hello World in C++, Ansi-style
+//============================================================================
+
+/*
+ - Remove edges from graph
+ - Find orbits
+ - Get distinct list of orbits
+ - Find largest and check if it is a used node
+ */
+#include <iostream>
+#include <chrono>
+#include <Common.h>
+#include <vector>
+#include <mutex>
+
+#define MAXN 8000
+#define WORDSIZE 64
+
+#define REMOVEONEARC0(g,v,w,m) DELELEMENT0(GRAPHROW0(g,v,m),w)
+#define REMOVEONEEDGE(g,v,w,m) { REMOVEONEARC0(g,v,w,m); REMOVEONEARC0(g,w,v,m); }
+
+mutex(theMutex);
+
+extern "C" {
+	#include "nauty.h"
+	#include "nausparse.h"
+}
+
+int vertex_edge(int N, int i, int j){
+	int upper_lim = N - 1;
+	int lower_lim = N - i;
+	int diff = j - i - 1;
+
+	int edge = (i * (upper_lim + lower_lim)) / 2 + diff;
+
+	return edge;
+}
+
+vector<int> branch_indexes(int orbits[], int vertex_count, int variable_count, vector<int> emptyNodes){
+
+	int orbit_array[vertex_count] = {};
+
+	for(int i=0; i<vertex_count; ++i){
+		orbit_array[orbits[i]]++;
+	}
+
+	multimap<int, int> counts;
+
+	for (int i=0; i<variable_count; ++i){
+		if (orbit_array[i] > 0){
+			counts.insert(pair<int, int>(orbit_array[i], i));
+		}
+	}
+
+	int main_var;
+	for(auto it = counts.rbegin();it != counts.rend(); ++it)
+	{
+		if (it->second < variable_count)
+			if (!count(emptyNodes.begin(), emptyNodes.end(), it->second)){
+				main_var = it->second;
+				cout << "main var is " << main_var << endl;
+				break;
+			}
+	}
+
+	vector<int> branch_on;
+
+	for (int i=0; i<variable_count; ++i){
+		if (orbits[i] == main_var){
+			branch_on.emplace_back(i);
+		}
+	}
+
+	return branch_on;
+}
+
+struct constraintRow
+{
+	vector<int> constraintNo;
+};
+
+void graphFromConstraintMatrix(graph g[MAXN*MAXM], int m, vector<constraintRow> cm){
+	for (int i=0; i<cm.size(); ++i){
+		for (int j=0; j<cm[i].constraintNo.size(); ++j){
+			ADDONEEDGE(g,i,cm[i].constraintNo[j],m);
+		}
+	}
+}
+
+struct BranchingCallback : public IloCplex::Callback::Function
+{
+	IloBoolVarArray x;
+	vector<constraintRow> nodeConstraint;
+	int m;
+	int nodeCount;
+
+	BranchingCallback(IloBoolVarArray& x, vector<constraintRow>& nodeConstraint, int& m, int& nodeCount);
+
+	void invoke(const IloCplex::Callback::Context& context);
+};
+
+BranchingCallback::BranchingCallback(
+		IloBoolVarArray& xIn,
+		vector<constraintRow>& nodeConstraintIn,
+		int& mIn,
+		int& nodeCountIn) : x(xIn), nodeConstraint(nodeConstraintIn), m(mIn), nodeCount(nodeCountIn)
+{
+}
+
+void BranchingCallback::invoke(const IloCplex::Callback::Context& context)
+{
+
+	int variable_count = nodeConstraint.size();
+	int N = nodeCount;
+	int vertex_count = (N * (N-1) * (N-2))/6 + N + (N * (N-1))/2;
+	int m = SETWORDSNEEDED(vertex_count);
+
+	cout << "BranchingCallback::invoke has been called" << endl;
+	IloCplex::CplexStatus status = context.getRelaxationStatus(0);
+	double obj = context.getRelaxationObjective();
+
+	IloEnv env = context.getEnv();
+
+	IloNumArray lowerBound(env);
+	context.getLocalLB(x, lowerBound);
+
+	IloNumArray upperBound(env);
+	context.getLocalUB(x, upperBound);
+
+	int lab[vertex_count],ptn[vertex_count],orbits[vertex_count];
+
+	vector<int> arrayRemove;
+
+	//cout << "upper bound is 0 for: ";
+	for(int i=0; i<x.getSize(); ++i){
+		if(upperBound[i] == 0){
+			arrayRemove.emplace_back(i);
+			//cout << i << " ";
+		}
+	}
+
+	//cout << endl << "lower bound is 1 for: ";
+	for(int i=0; i<x.getSize(); ++i){
+		if(lowerBound[i] == 1){
+			arrayRemove.emplace_back(i);
+			//cout << i << " ";
+		}
+	}
+
+	cout << endl << "# of fixed variables: " << arrayRemove.size() << endl;
+
+	{
+		std::unique_lock<std::mutex> lock(theMutex);
+
+		graph g[MAXN*MAXM];
+
+		DEFAULTOPTIONS_GRAPH(options);
+
+		statsblk stats;
+
+		EMPTYGRAPH(g,m,vertex_count);
+		graphFromConstraintMatrix(g, m, nodeConstraint);
+
+		int selectedNode;
+		for (int i=0; i<arrayRemove.size(); ++i){
+			selectedNode = arrayRemove[i];
+			for (int j=0; j<nodeConstraint[selectedNode].constraintNo.size(); ++j){
+				REMOVEONEEDGE(g,selectedNode,nodeConstraint[selectedNode].constraintNo[j],m);
+			}
+		}
+
+		densenauty(g,lab,ptn,orbits,&options,&stats,m,vertex_count,NULL);
+	}
+
+	/*
+	int dummy_array[n] = {};
+
+	for(int i=0; i<n; ++i){
+		dummy_array[orbits[i]]++;
+	}
+
+	multimap<int, int> counts;
+
+	// <count, variable>
+	for (int i=0; i<n; ++i){
+		if (dummy_array[i] > 0){
+			counts.insert(pair<int, int>(dummy_array[i], i));
+		}
+	}
+
+	for(auto it = counts.rbegin();
+			it != counts.rend(); ++it)
+	{
+		cout << it->first << " elements in orbit with " << it->second << endl;
+	}
+
+	int main_var;
+	for(auto it = counts.rbegin();
+			it != counts.rend(); ++it)
+	{
+		if (binary_search(arrayRemove.begin(), arrayRemove.end(), it->second) == 0){
+			if(it->second < n){
+				main_var = it->second;
+				break;
+			}
+		}
+	}
+
+	vector<int> branch_on;
+
+	for (int i=0; i<n; ++i){
+		if (orbits[i] == main_var)
+		{
+			branch_on.emplace_back(i);
+		}
+	}
+
+	cout << "Current relaxed " << main_var << endl;
+
+	*/
+	int priority[variable_count];
+	void cbdata;
+
+	status = CPXgetcallbackorder(env, *cbdata, CPX_CALLBACK_MIP_NODE,
+	                               NULL, NULL, 0, variable_count-1);
+
+
+	vector<int> branch_on = branch_indexes(orbits, vertex_count, variable_count, arrayRemove);
+
+	double rel_obj = context.getRelaxationObjective();
+
+	IloNumVarArray branch_vars(env);
+	IloNumArray zeros(env);
+	IloArray<IloCplex::BranchDirection> IloDown(env);
+
+	for (int i=0; i<branch_on.size(); ++i){
+		branch_vars.add(x[branch_on[i]]);
+		zeros.add(0);
+		IloDown.add(IloCplex::BranchDown);
+	}
+	IloArray<IloCplex::BranchDirection> down;
+	CPXLONG upChild, downChild;
+
+	cout << "size of orbit is " << branch_on.size() << " and first element is " << branch_on[0] << endl;
+
+	upChild = context.makeBranch(branch_vars, zeros, IloDown, rel_obj);
+	downChild = context.makeBranch(x[branch_on[0]], 1, IloCplex::BranchUp, rel_obj);
+
+	(void)downChild;
+	(void)upChild;
+
+	branch_vars.end();
+	IloDown.end();
+}
+
+int main() {
+
+	//solveModel(13, 29, 14);
+	//solveModel(3, 7, 3);
+	/*
+	vector<int> empty;
+	empty.emplace_back(0);
+	int m[8] = {5, 1, 0, 0, 0, 2, 5, 3};
+
+	vector<int> branch_on;
+
+	branch_on = branch_indexes(m, 8, empty);
+	for (int i=0; i<branch_on.size(); ++i){
+		cout << branch_on[i] << endl;
+	}
+*/
+
+	vector<constraintRow> nodeConstraint;
+
+	cout << "vertex_edge " << vertex_edge(5, 2, 3) << endl;
+	int d = 7;
+	int N = 17;
+	int nodeCount = N;
+	int maxN;
+	maxN = (N * (N-1) * (N-2))/6 + N + (N * (N-1))/2;
+	//graph g[MAXN*MAXM];
+
+	int lab[maxN],ptn[maxN],orbits[maxN];
+	static DEFAULTOPTIONS_GRAPH(options);
+
+	statsblk stats;
+	int n,m;
+	n = maxN;
+
+	m = ceil(n/WORDSIZE);
+	m = SETWORDSNEEDED(n);
+	nauty_check(WORDSIZE,m,n,NAUTYVERSIONID);
+
+
+	//EMPTYGRAPH(g,m,n);
+	int constraint_number = (N * (N-1))/2;
+	nodeConstraint.resize(constraint_number);
+
+	std::chrono::steady_clock::time_point start, end;
+	IloEnv env;
+	IloModel model(env);
+	IloBoolVarArray x = CreateBoolVarArray(env, (N * (N-1))/2, "x");
+
+	IloObjective objective = IloMaximize(env);
+	model.add(objective);
+
+	for (int i = 0; i < N; ++i)
+		for (int j = i + 1; j < N; ++j)
+		{
+			objective.setLinearCoef(x[vertex_edge(N, i, j)], 1);
+		}
+
+	cout << "Constraint number initial " << constraint_number << endl;
+
+	for (int i = 0; i < N; ++i)
+		for (int j = i + 1; j < N; ++j)
+			for (int k = j + 1; k < N; ++k)
+			{
+				model.add(x[vertex_edge(N, i, j)] + x[vertex_edge(N, i, k)] + x[vertex_edge(N, j, k)] <= 2);
+				//ADDONEEDGE(g,vertex_edge(N, i, j),constraint_number,m);
+				//ADDONEEDGE(g,vertex_edge(N, i, k),constraint_number,m);
+				//ADDONEEDGE(g,vertex_edge(N, j, k),constraint_number,m);
+				nodeConstraint[vertex_edge(N, i, j)].constraintNo.emplace_back(constraint_number);
+				nodeConstraint[vertex_edge(N, i, k)].constraintNo.emplace_back(constraint_number);
+				nodeConstraint[vertex_edge(N, j, k)].constraintNo.emplace_back(constraint_number);
+
+				//REMOVEONEEDGE(g,vertex_edge(N, i, j),constraint_number,m);
+				//REMOVEONEEDGE(g,vertex_edge(N, i, k),constraint_number,m);
+				//REMOVEONEEDGE(g,vertex_edge(N, j, k),constraint_number,m);
+
+				//cout << "Edge btw " << constraint_number << " and " << vertex_edge(N, i, j) << endl;
+				//cout << "Edge btw " << constraint_number << " and " << vertex_edge(N, i, k) << endl;
+				//cout << "Edge btw " << constraint_number << " and " << vertex_edge(N, j, k) << endl;
+				constraint_number++;
+			}
+
+	cout << "Constraint number after first set " << constraint_number << endl;
+
+	IloRangeArray degreeConstraints = CreateRangeArray(env, N, "degree", 0, d);
+
+	for (int i = 0; i < N; ++i)
+	{
+
+		for (int j = 0; j < N; ++j)
+			if (i < j)
+			{
+				degreeConstraints[i].setLinearCoef(x[vertex_edge(N, i, j)], 1);
+				//ADDONEEDGE(g, vertex_edge(N, i, j), constraint_number,m);
+				nodeConstraint[vertex_edge(N, i, j)].constraintNo.emplace_back(constraint_number);
+
+				//cout << "Edge btw " << constraint_number << " and " << vertex_edge(N, i, j) << endl;
+				//REMOVEONEEDGE(g, vertex_edge(N, i, j), constraint_number,m);
+			}
+			else if (i > j)
+			{
+				degreeConstraints[i].setLinearCoef(x[vertex_edge(N, j, i)], 1);
+				//ADDONEEDGE(g,vertex_edge(N, j, i), constraint_number,m);
+				nodeConstraint[vertex_edge(N, j, i)].constraintNo.emplace_back(constraint_number);
+
+				//cout << "Edge btw " << constraint_number << " and " << vertex_edge(N, j, i) << endl;
+				//REMOVEONEEDGE(g, vertex_edge(N, j, i), constraint_number,m);
+
+			}
+		constraint_number++;
+
+	}
+
+
+	cout << "Constraint number end " << constraint_number << endl;
+
+	model.add(degreeConstraints);
+
+	IloCplex cplex(model);
+	cplex.getObjective();
+	cplex.exportModel ("lpex1.lp");
+
+	cout << "Number of cols " << cplex.getNcols() << endl;
+	cout << "Number of rows " << cplex.getNrows() << endl;
+
+	cplex.setParam(IloCplex::Param::TimeLimit, 6000);
+
+	start = chrono::steady_clock::now();
+
+
+	/*
+	graphFromConstraintMatrix(g, m, nodeConstraint);
+
+	densenauty(g,lab,ptn,orbits,&options,&stats,m,n,NULL);
+
+	end = chrono::steady_clock::now();
+	int secs = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+	cout << "Duration is " << secs << endl;
+	vector<int> vec;
+
+	for(int i=0; i<maxN; ++i){
+		vec.emplace_back(orbits[i]);
+	}
+	sort( vec.begin(), vec.end() );
+	vec.erase( unique( vec.begin(), vec.end() ), vec.end() );
+
+	cout << "size is " << vec.size() << endl;
+
+	int n_dummy[n] = {};
+
+	for(int i=0; i<n; ++i){
+		n_dummy[orbits[i]]++;
+	}
+
+	multimap<int, int> counts;
+
+	for (int i=0; i<n; ++i){
+		if (n_dummy[i] > 0){
+			counts.insert(pair<int, int>(n_dummy[i], i));
+		}
+	}
+
+	for(auto it = counts.rbegin();
+			it != counts.rend(); ++it)
+	{
+		cout << it->first << " elements in orbit with " << it->second << endl;
+	}
+	*/
+
+	BranchingCallback Callback(x, nodeConstraint, m, nodeCount);
+	cplex.use(&Callback, IloCplex::Callback::Context::Id::Branching);
+
+	//cplex.setParam(IloCplex::Threads, 1);
+	bool Success = cplex.solve();
+	if (Success)
+	{
+		cout << "Success " << cplex.getCplexStatus() << endl;
+		cout << "LB = " << cplex.getObjValue() << endl;
+		cout << "UB = " << cplex.getBestObjValue() << endl;
+		cout << "node " << cplex.getNnodes() << endl;
+	}
+
+	return 0;
+}
