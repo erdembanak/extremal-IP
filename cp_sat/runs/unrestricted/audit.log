@@ -1,0 +1,11 @@
+audit e58-p2: INFEASIBLE; 7 assignments; classes [1]; 0 noncritical
+audit e58-p1: INFEASIBLE; 0 assignments; classes []; 0 noncritical
+audit e58-p0: INFEASIBLE; 1 assignments; classes [0]; 0 noncritical
+audit e57-p0: INFEASIBLE; 3 assignments; classes [0, 1]; 0 noncritical
+audit e57-p1: INFEASIBLE; 6 assignments; classes [2, 3, 4]; 0 noncritical
+audit e57-p4: INFEASIBLE; 70 assignments; classes [15]; 0 noncritical
+audit e57-p5: INFEASIBLE; 128 assignments; classes [16, 17, 18, 19]; 0 noncritical
+audit e57-p2: INFEASIBLE; 70 assignments; classes [5, 6]; 0 noncritical
+audit e57-p6: INFEASIBLE; 28 assignments; classes [20]; 0 noncritical
+audit e57-p3: INFEASIBLE; 119 assignments; classes [7, 8, 9, 10, 11, 12, 13, 14]; 0 noncritical
+{"complete_agreement": true}

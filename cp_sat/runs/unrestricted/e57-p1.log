@@ -1,0 +1,24 @@
+
+ROUND 1 at 2026-09-19T14:41:42.820230+00:00
+graph 1: edges=57, unique=1, alpha=7, factor_critical=True
+graph 2: edges=57, unique=1, alpha=7, factor_critical=True
+graph 3: edges=57, unique=1, alpha=7, factor_critical=True
+graph 4: edges=57, unique=1, alpha=7, factor_critical=True
+graph 5: edges=57, unique=2, alpha=8, factor_critical=True
+graph 6: edges=57, unique=3, alpha=8, factor_critical=True
+graph 7: edges=57, unique=3, alpha=8, factor_critical=True
+graph 8: edges=57, unique=3, alpha=8, factor_critical=True
+{
+  "mode": "enumerate",
+  "complete": true,
+  "stop_reason": "INFEASIBLE",
+  "last_solver_status": "INFEASIBLE",
+  "labelled_solutions": 8,
+  "nonisomorphic_graphs": 3,
+  "blocked_assignments": 1029,
+  "new_solutions_this_run": 8,
+  "elapsed_seconds": 5.8816574289994605,
+  "workers": 3,
+  "seed": 1,
+  "complete_meaning": "Every isomorphism class satisfying manifest spec covered"
+}

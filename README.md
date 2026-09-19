@@ -12,6 +12,15 @@ maximum degree and matching number.
 - [`cp_sat/data/`](cp_sat/data/README.md): individual graph JSON files,
   solver-compatible cone inputs, and a machine-readable index.
 
+## Catalogue without an independence restriction
+
+The broader fixed-order enumeration is also complete: **2 classes at 58 edges
+and 21 at 57 edges**, for triangle-free graphs on 17 vertices with maximum
+degree at most 7. No independence-number or factor-criticality constraint is
+imposed; all returned graphs turn out to be factor-critical.
+See [results and reproduction](cp_sat/UNRESTRICTED.md) and
+[individual graph files](cp_sat/data/unrestricted/).
+
 ## Completed restricted catalogue
 
 For triangle-free graphs F on 17 vertices with maximum degree at most 7,

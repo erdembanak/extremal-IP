@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "num_vertices": 17,
+  "maximum_degree": 7,
+  "triangle_free": true,
+  "independence_constraint": null,
+  "factor_critical_constraint": false,
+  "complete": true,
+  "graphs": [
+    {
+      "name": "U58_001",
+      "file": "U58_001.json",
+      "edges": 58,
+      "alpha": 8,
+      "factor_critical": true
+    },
+    {
+      "name": "U58_002",
+      "file": "U58_002.json",
+      "edges": 58,
+      "alpha": 7,
+      "factor_critical": true
+    },
+    {
+      "name": "U57_001",
+      "file": "U57_001.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_002",
+      "file": "U57_002.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {
+        "U58_001": 30
+      }
+    },
+    {
+      "name": "U57_003",
+      "file": "U57_003.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {
+        "U58_001": 24
+      }
+    },
+    {
+      "name": "U57_004",
+      "file": "U57_004.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_005",
+      "file": "U57_005.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_006",
+      "file": "U57_006.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_007",
+      "file": "U57_007.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_008",
+      "file": "U57_008.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_009",
+      "file": "U57_009.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_010",
+      "file": "U57_010.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_011",
+      "file": "U57_011.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_012",
+      "file": "U57_012.json",
+      "edges": 57,
+      "alpha": 7,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {
+        "U58_002": 16
+      }
+    },
+    {
+      "name": "U57_013",
+      "file": "U57_013.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_014",
+      "file": "U57_014.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_015",
+      "file": "U57_015.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_016",
+      "file": "U57_016.json",
+      "edges": 57,
+      "alpha": 7,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {
+        "U58_002": 18
+      }
+    },
+    {
+      "name": "U57_017",
+      "file": "U57_017.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_018",
+      "file": "U57_018.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_019",
+      "file": "U57_019.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {}
+    },
+    {
+      "name": "U57_020",
+      "file": "U57_020.json",
+      "edges": 57,
+      "alpha": 8,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {
+        "U58_001": 4
+      }
+    },
+    {
+      "name": "U57_021",
+      "file": "U57_021.json",
+      "edges": 57,
+      "alpha": 7,
+      "factor_critical": true,
+      "single_edge_deletion_parents": {
+        "U58_002": 24
+      }
+    }
+  ],
+  "layers": {
+    "58": {
+      "count": 2,
+      "distribution": [
+        {
+          "alpha": 7,
+          "factor_critical": true,
+          "count": 1
+        },
+        {
+          "alpha": 8,
+          "factor_critical": true,
+          "count": 1
+        }
+      ]
+    },
+    "57": {
+      "count": 21,
+      "distribution": [
+        {
+          "alpha": 7,
+          "factor_critical": true,
+          "count": 3
+        },
+        {
+          "alpha": 8,
+          "factor_critical": true,
+          "count": 18
+        }
+      ]
+    }
+  }
+}

@@ -1,5 +1,8 @@
 # Individual graphs and cones
 
+This directory's four graphs use the independence-number restriction.
+The larger 23-graph fixed-order catalogue is in [`unrestricted/`](unrestricted/).
+
 `index.json` lists four candidates and their cones. Labels are zero-based.
 Independent bags: `[0,1,2,3]`, `[4,5,6,7]`, `[8,9,10]`, `[11,12,13]`,
 `[14,15,16]`. The blowup joins consecutive bags cyclically.

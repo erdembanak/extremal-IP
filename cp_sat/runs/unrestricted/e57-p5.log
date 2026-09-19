@@ -1,0 +1,85 @@
+
+ROUND 1 at 2026-09-19T14:41:56.903552+00:00
+graph 1: edges=57, unique=1, alpha=8, factor_critical=True
+graph 2: edges=57, unique=2, alpha=8, factor_critical=True
+graph 3: edges=57, unique=3, alpha=8, factor_critical=True
+graph 4: edges=57, unique=3, alpha=8, factor_critical=True
+graph 5: edges=57, unique=3, alpha=8, factor_critical=True
+graph 6: edges=57, unique=3, alpha=8, factor_critical=True
+graph 7: edges=57, unique=3, alpha=8, factor_critical=True
+graph 8: edges=57, unique=3, alpha=8, factor_critical=True
+graph 9: edges=57, unique=3, alpha=8, factor_critical=True
+graph 10: edges=57, unique=3, alpha=8, factor_critical=True
+graph 11: edges=57, unique=4, alpha=8, factor_critical=True
+graph 12: edges=57, unique=4, alpha=8, factor_critical=True
+graph 13: edges=57, unique=4, alpha=8, factor_critical=True
+graph 14: edges=57, unique=4, alpha=8, factor_critical=True
+graph 15: edges=57, unique=4, alpha=8, factor_critical=True
+graph 16: edges=57, unique=4, alpha=8, factor_critical=True
+graph 17: edges=57, unique=4, alpha=8, factor_critical=True
+graph 18: edges=57, unique=4, alpha=8, factor_critical=True
+graph 19: edges=57, unique=4, alpha=8, factor_critical=True
+graph 20: edges=57, unique=4, alpha=8, factor_critical=True
+graph 21: edges=57, unique=4, alpha=8, factor_critical=True
+graph 22: edges=57, unique=4, alpha=8, factor_critical=True
+graph 23: edges=57, unique=4, alpha=8, factor_critical=True
+graph 24: edges=57, unique=4, alpha=8, factor_critical=True
+graph 25: edges=57, unique=4, alpha=8, factor_critical=True
+graph 26: edges=57, unique=4, alpha=8, factor_critical=True
+graph 27: edges=57, unique=4, alpha=8, factor_critical=True
+graph 28: edges=57, unique=4, alpha=8, factor_critical=True
+graph 29: edges=57, unique=4, alpha=8, factor_critical=True
+graph 30: edges=57, unique=4, alpha=8, factor_critical=True
+graph 31: edges=57, unique=4, alpha=8, factor_critical=True
+graph 32: edges=57, unique=4, alpha=8, factor_critical=True
+graph 33: edges=57, unique=4, alpha=8, factor_critical=True
+graph 34: edges=57, unique=4, alpha=8, factor_critical=True
+graph 35: edges=57, unique=4, alpha=8, factor_critical=True
+graph 36: edges=57, unique=4, alpha=8, factor_critical=True
+graph 37: edges=57, unique=4, alpha=8, factor_critical=True
+graph 38: edges=57, unique=4, alpha=8, factor_critical=True
+graph 39: edges=57, unique=4, alpha=8, factor_critical=True
+graph 40: edges=57, unique=4, alpha=8, factor_critical=True
+{
+  "mode": "enumerate",
+  "complete": false,
+  "stop_reason": "UNKNOWN",
+  "last_solver_status": "UNKNOWN",
+  "labelled_solutions": 40,
+  "nonisomorphic_graphs": 4,
+  "blocked_assignments": 4988,
+  "new_solutions_this_run": 40,
+  "elapsed_seconds": 30.005478560000483,
+  "workers": 3,
+  "seed": 1,
+  "complete_meaning": "Every isomorphism class satisfying manifest spec covered"
+}
+
+ROUND 1 at 2026-09-19T14:42:40.537847+00:00
+graph 41: edges=57, unique=4, alpha=8, factor_critical=True
+graph 42: edges=57, unique=4, alpha=8, factor_critical=True
+graph 43: edges=57, unique=4, alpha=8, factor_critical=True
+graph 44: edges=57, unique=4, alpha=8, factor_critical=True
+graph 45: edges=57, unique=4, alpha=8, factor_critical=True
+graph 46: edges=57, unique=4, alpha=8, factor_critical=True
+graph 47: edges=57, unique=4, alpha=8, factor_critical=True
+graph 48: edges=57, unique=4, alpha=8, factor_critical=True
+graph 49: edges=57, unique=4, alpha=8, factor_critical=True
+graph 50: edges=57, unique=4, alpha=8, factor_critical=True
+graph 51: edges=57, unique=4, alpha=8, factor_critical=True
+graph 52: edges=57, unique=4, alpha=8, factor_critical=True
+graph 53: edges=57, unique=4, alpha=8, factor_critical=True
+{
+  "mode": "enumerate",
+  "complete": true,
+  "stop_reason": "INFEASIBLE",
+  "last_solver_status": "INFEASIBLE",
+  "labelled_solutions": 53,
+  "nonisomorphic_graphs": 4,
+  "blocked_assignments": 6594,
+  "new_solutions_this_run": 13,
+  "elapsed_seconds": 22.519913520000046,
+  "workers": 3,
+  "seed": 1,
+  "complete_meaning": "Every isomorphism class satisfying manifest spec covered"
+}

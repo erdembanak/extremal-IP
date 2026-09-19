@@ -9,6 +9,10 @@ The full Earth–Moon candidate enumeration is now complete: one class at 58
 edges and three at 57 edges, replicated with a second encoding. See
 [RESULTS.md](RESULTS.md) for the exact scope, explicit graphs, and limitations.
 
+For the broader **17-vertex catalogue without independence or factor-criticality
+constraints**, see [UNRESTRICTED.md](UNRESTRICTED.md): two classes at 58 edges
+and 21 at 57 edges. It has separate code, run directories, and graph exports.
+
 Create an environment at `.tools/cp-sat-venv`
 from the repository root (Python 3.10 or a compatible newer version):
 

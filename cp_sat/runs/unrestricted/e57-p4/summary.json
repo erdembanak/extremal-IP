@@ -1,0 +1,14 @@
+{
+  "mode": "enumerate",
+  "complete": true,
+  "stop_reason": "INFEASIBLE",
+  "last_solver_status": "INFEASIBLE",
+  "labelled_solutions": 32,
+  "nonisomorphic_graphs": 1,
+  "blocked_assignments": 3751,
+  "new_solutions_this_run": 32,
+  "elapsed_seconds": 23.634112683999774,
+  "workers": 3,
+  "seed": 1,
+  "complete_meaning": "Every isomorphism class satisfying manifest spec covered"
+}
