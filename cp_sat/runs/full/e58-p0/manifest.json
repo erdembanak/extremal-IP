@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "spec": {
+    "vertices": 17,
+    "degree": 7,
+    "edges": 58,
+    "alpha_max": 7,
+    "factor_critical": true,
+    "degree_order": true,
+    "degrees": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      6,
+      6,
+      6
+    ],
+    "row_lex": true
+  },
+  "relabel_blocks": 128,
+  "source_sha256": "348ff8e0315628f5132b2817d757bf8f9ddc8c17c16176d7d2859d59dc0c0a75",
+  "packages": {
+    "ortools": "9.15.6755",
+    "networkx": "3.4.2",
+    "pynauty": "2.8.8.1"
+  }
+}

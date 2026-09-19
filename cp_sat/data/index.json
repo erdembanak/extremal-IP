@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "vertex_labels": "zero-based",
+  "scope": "n=17, triangle-free, maximum degree <=7, alpha <=7, edges in {57,58}",
+  "graphs": [
+    {
+      "name": "F58",
+      "edges": 58,
+      "graph": "F58.json",
+      "cone": "cone_F58.json"
+    },
+    {
+      "name": "F57_44",
+      "edges": 57,
+      "graph": "F57_44.json",
+      "cone": "cone_F57_44.json"
+    },
+    {
+      "name": "F57_43",
+      "edges": 57,
+      "graph": "F57_43.json",
+      "cone": "cone_F57_43.json"
+    },
+    {
+      "name": "F57_33",
+      "edges": 57,
+      "graph": "F57_33.json",
+      "cone": "cone_F57_33.json"
+    }
+  ]
+}

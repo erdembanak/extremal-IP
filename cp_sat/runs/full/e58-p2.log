@@ -1,0 +1,16 @@
+
+ROUND 1 at 2026-09-19T13:40:14.702760+00:00
+{
+  "mode": "enumerate",
+  "complete": true,
+  "stop_reason": "INFEASIBLE",
+  "last_solver_status": "INFEASIBLE",
+  "labelled_solutions": 0,
+  "nonisomorphic_graphs": 0,
+  "blocked_assignments": 0,
+  "new_solutions_this_run": 0,
+  "elapsed_seconds": 1.9578201069998613,
+  "workers": 3,
+  "seed": 1,
+  "complete_meaning": "Every isomorphism class satisfying manifest spec covered"
+}

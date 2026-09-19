@@ -1,0 +1,31 @@
+{
+  "edges": 57,
+  "degrees": [
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    6,
+    6,
+    6,
+    5
+  ],
+  "pattern": 1,
+  "complete": true,
+  "last_solver_status": "INFEASIBLE",
+  "assignments": 2,
+  "catalogue_indices": [
+    2
+  ],
+  "non_factor_critical_graphs": [],
+  "elapsed_seconds": 16.997988885001178
+}
