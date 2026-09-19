@@ -5,13 +5,16 @@ This ports the binary graph formulation in
 to OR-Tools CP-SAT. Python builds the model; the search runs in the compiled
 C++ solver. No CPLEX installation or license is needed.
 
-The full Earth–Moon candidate enumeration is now complete: one class at 58
-edges and three at 57 edges, replicated with a second encoding. See
-[RESULTS.md](RESULTS.md) for the exact scope, explicit graphs, and limitations.
+The **17-vertex catalogue without independence or factor-criticality
+constraints** is complete: two classes at 58 edges and 21 at 57 edges, all
+triangle-free with maximum degree at most 7. Both encodings agree, and every
+returned graph is factor-critical. See [UNRESTRICTED.md](UNRESTRICTED.md) and
+[the 23 graph files](data/unrestricted/).
 
-For the broader **17-vertex catalogue without independence or factor-criticality
-constraints**, see [UNRESTRICTED.md](UNRESTRICTED.md): two classes at 58 edges
-and 21 at 57 edges. It has separate code, run directories, and graph exports.
+The independence-at-most-seven subset has one class at 58 edges and three
+at 57 edges. It is the family relevant to the Earth–Moon reduction; see
+[RESULTS.md](RESULTS.md). The two catalogues have separate run directories
+and exports. Neither catalogue covers graphs of other orders.
 
 Create an environment at `.tools/cp-sat-venv`
 from the repository root (Python 3.10 or a compatible newer version):
@@ -74,7 +77,22 @@ Thus the constraints preserve a representative of every class. Their effect on
 complete small-graph catalogues is covered by the tests. They substantially
 strengthen degree sorting without relying on the CPLEX callback.
 
-**Run the Earth–Moon candidate search**
+**Run without independence or factor-criticality restrictions**
+
+```bash
+.tools/cp-sat-venv/bin/python cp_sat/unrestricted_enumeration.py --round-seconds 120
+.tools/cp-sat-venv/bin/python cp_sat/audit_unrestricted.py
+.tools/cp-sat-venv/bin/python cp_sat/export_unrestricted.py
+.tools/cp-sat-venv/bin/python cp_sat/verify_unrestricted.py
+```
+
+These commands use `cp_sat/runs/unrestricted/` and export to
+`cp_sat/data/unrestricted/`. Completed checkpoints are skipped; to repeat
+the search from scratch, move the supplied run directory aside first.
+The audit must report `complete_agreement: true`. See
+[UNRESTRICTED.md](UNRESTRICTED.md) for the results and verification limits.
+
+**Run the Earth–Moon candidate search (with the independence restriction)**
 
 List all possible degree multisets. Indices are zero-based and printed in full:
 
