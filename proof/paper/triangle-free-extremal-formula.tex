@@ -1,0 +1,1030 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\fDelta}{f_{\Delta}}
+\newcommand{\deficiency}{\operatorname{def}}
+\newcommand{\N}{N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+
+\title{An Exact Extremal Formula for Triangle-Free Graphs\\
+with Bounded Degree and Matching Number}
+\author{Erdem Banak\\[2mm]
+\small Research draft, not peer reviewed}
+\date{October 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We determine the maximum number of edges in a triangle-free graph with
+prescribed upper bounds on maximum degree and matching number. The result
+is an explicit formula for all degrees $d\ge2$ and matching bounds $m\ge0$,
+together with constructions attaining it. We combine the component reduction
+of Ahanjideh, Ekim, and Y\i ld\i z and the construction family of Banak, Ekim,
+and Ta\c{s}k\i n with a new fixed-order bound. Its proof extracts a saturated
+five-cycle, forces a homomorphism to $C_5$ under a total-deficiency hypothesis,
+and uses an odd-excess imbalance to bound the missing edges. The same argument
+determines the remaining odd-degree thresholds. An elementary packing
+argument then yields the general formula, resolving the two conjectures.
+The new fixed-order argument, including the shortest-odd-cycle step, and the
+packing normalization are checked in Lean. The final deductions are
+conditional on explicit published inputs.
+\end{abstract}
+
+\section{Introduction}
+
+For integers $d\ge2$ and $m\ge0$, let $\fDelta(d,m)$ be the maximum number of
+edges in a finite simple triangle-free graph $G$ satisfying
+\[
+  \Delta(G)\le d,\qquad \nu(G)\le m,
+\]
+where $\nu(G)$ denotes matching number. The main theorem gives this maximum
+without an implicitly defined threshold parameter.
+
+\begin{theorem}[General extremal formula]\label{thm:main}
+For $d\ge2$, define
+\begin{equation}\label{eq:explicit-threshold}
+  z_d=
+  \begin{cases}
+    \floor{5d/4},&d\text{ even},\\
+    3(d-1)/2,&d\in\{3,5,7\},\\
+    \floor{5(d+1)/4},&d\ge9\text{ odd}.
+  \end{cases}
+\end{equation}
+For every $m\ge0$, write $m=kz_d+r$, where $0\le r<z_d$. Then
+\begin{equation}\label{eq:main-formula}
+  \fDelta(d,m)=dm+k\floor{d/2}+\max\{0,r-d+1\}.
+\end{equation}
+The value is attained by a disjoint union of threshold components, at most
+one additional non-star component, and $d$-stars.
+\end{theorem}
+
+Ahanjideh, Ekim, and Y\i ld\i z~\cite{AEY2022} proved the formula in several
+parameter ranges and established the component reduction on which we build.
+They introduced $Z(d)$, the least matching number of a triangle-free
+factor-critical graph that is $d$-regular for even $d$, or has one vertex of
+degree $d-1$ and all others of degree $d$ for odd $d$. Banak, Ekim, and
+Ta\c{s}k\i n~\cite{BET2023} extended the computational results and supplied
+the intermediate construction family. Their Conjectures~2.1 and~2.2 assert
+the intermediate component value and the unrestricted extremal formula.
+
+We integrate the short component and endpoint proofs from~\cite{AEY2022},
+with attribution, into the argument below. The new step is the fixed-order
+upper bound: a graph exceeding the proposed component value has too little
+total deficiency to avoid a saturated five-cycle. The cycle excess
+$q=2|V(G)|-5d$ then governs both the extension to a $C_5$-coloring and the
+final missing-edge count. This proves the intermediate bound and identifies
+$Z(d)=z_d$; a single packing argument completes \cref{thm:main}.
+
+Thus the previously conjectured formulas are consequences of the general
+theorem and its component bound. The theorem gives the extremal value and
+examples attaining it; it does not classify every extremal graph.
+
+\section{Reduction to factor-critical components}\label{sec:reduction}
+
+We omit isolated vertices. The maximum defining $\fDelta(d,m)$ exists:
+the endpoints of a maximal matching form a vertex cover of size at most
+$2m$, so every admissible graph has at most $2md$ edges. Among graphs attaining
+the maximum, choose one with as many $d$-star components as possible.
+Call such a graph \emph{normalized}. It has matching number exactly $m$,
+since otherwise adjoining a $d$-star would increase its edge count.
+Below, a non-star component means one not isomorphic to $K_{1,d}$.
+
+We use Gallai's lemma: a connected graph whose matching number is unchanged
+by deletion of any vertex is factor-critical; see~\cite[Lemma~2.2]{AEY2022}.
+The following reduction is the argument of~\cite[Lemma~2.4]{AEY2022}.
+
+\begin{lemma}\label{lem:star-reduction}
+Every non-star component of a normalized extremal graph is factor-critical.
+It has $2j+1$ vertices, where $j$ is its matching number, and is itself
+extremal for the bounds $(d,j)$.
+\end{lemma}
+
+\begin{proof}
+If a non-star component $H$ were not factor-critical, Gallai's lemma would
+give a vertex $v$ with $\nu(H-v)\le\nu(H)-1$. Replace $H$ by $H-v$ and a
+$d$-star. This preserves admissibility and loses at most $d$ edges while
+adding $d$, so the resulting graph is still extremal. It has more $d$-stars,
+a contradiction. Factor-criticality gives the asserted order. Finally,
+replacing $H$ by any admissible graph with more edges would contradict
+extremality of the whole graph.
+\end{proof}
+
+The next bound is~\cite[Lemma~3.1]{AEY2022}; its proof uses Mantel's theorem.
+
+\begin{lemma}\label{lem:fc-order-bound}
+A connected triangle-free factor-critical graph $H$ with matching number
+$j$ has at most $j^2+1$ edges.
+\end{lemma}
+
+\begin{proof}
+The one-vertex case is immediate. Otherwise $H$ is nonbipartite and has
+$2j+1$ vertices. Choose a shortest odd cycle of length $2s+1$, with $s\ge2$.
+It is induced, and every outside vertex has at most $s$ neighbors on it.
+The remaining $2(j-s)$ vertices induce at most $(j-s)^2$ edges by Mantel's
+theorem. Consequently
+\[
+  e(H)\le(2s+1)+2s(j-s)+(j-s)^2
+        =j^2+2-(s-1)^2\le j^2+1.
+\]
+\end{proof}
+
+\begin{corollary}\label{lem:component-lower}
+Every non-star component of a normalized extremal graph has matching number
+at least $d$.
+\end{corollary}
+
+\begin{proof}
+Here $j\ge2$: the case $j=0$ is an omitted isolated vertex, while the only
+factor-critical graph on three vertices is $K_3$, which is not triangle-free.
+If $j<d$, then
+$j^2+1<dj$, and replacing it by $j$ copies of a $d$-star increases the edge
+count, contradicting \cref{lem:fc-order-bound} and extremality.
+This is the replacement used in~\cite[Lemma~3.2]{AEY2022}.
+\end{proof}
+
+\section{Constructions, endpoints, and threshold bounds}\label{sec:foundations}
+
+\subsection{A common construction family}
+
+We use the following consequence of Hall's theorem. A balanced bipartite
+graph with $a$ vertices per side and minimum degree at least $a/2$ has a
+perfect matching. Indeed, a nonempty set $S$ on one side with $|S|\le a/2$
+has at least $a/2$ neighbors. If $|S|>a/2$, every vertex on the opposite
+side has a neighbor in $S$, since otherwise its degree would be less than
+$a/2$.
+
+The recipe below is the family of~\cite[Proposition~4.1]{BET2023}.
+We include its degree and matching verification and use the same Hall
+argument to establish factor-criticality throughout the stated range.
+
+\begin{lemma}[Intermediate construction]\label{input:construction}
+Let $d\ge3$, $t\ge0$, and $2t+2\le d$. There is a triangle-free
+factor-critical graph $B_{d,d+t}$ with
+\[
+  |V(B_{d,d+t})|=2(d+t)+1,\quad
+  \nu(B_{d,d+t})=d+t,\quad
+  e(B_{d,d+t})=d(d+t)+t+1,
+\]
+whose $2(d+t)$ original vertices have degree $d$ and whose remaining vertex
+has degree $2t+2$.
+\end{lemma}
+
+\begin{proof}
+Start with $K_{d+t,d+t}$ on sides $L,R$. Partition each side into a set $F$
+of size $d-1$ and a set $H$ of size $t+1$. Delete $t$ edge-disjoint perfect
+matchings between $F_L$ and $F_R$, delete all edges between $H_L$ and $H_R$,
+and add a vertex $v$ adjacent to $H_L\cup H_R$. The required disjoint matchings
+exist, for example by taking cyclic shifts between the two sets of size
+$d-1$.
+
+Vertices in $F$ have degree $d+t-t=d$, those in $H$ have degree
+$d-1+1=d$, and $v$ has degree $2t+2$. Triangle-freeness follows because the
+graph without $v$ is bipartite and the neighbors of $v$ are independent.
+The edge count follows by summing degrees.
+
+Our hypotheses imply $d\ge t+3$: this is immediate for $t=0$, and follows
+from $2t+2\ge t+3$ for $t\ge1$. Deleting $v$ leaves a balanced bipartite
+graph with $d+t$ vertices per side and minimum degree $d-1\ge(d+t)/2$.
+If $x\in L$ is deleted instead, match $v$ to any vertex of $H_R$.
+The remaining bipartite graph has $d+t-1$ vertices per side and minimum
+degree at least $d-2\ge(d+t-1)/2$. Hall's theorem supplies a perfect
+matching in both cases; deletion from $R$ is symmetric. Thus the graph
+is factor-critical and has matching number $d+t$.
+\end{proof}
+
+\subsection{The left endpoint}
+
+\begin{proposition}\label{input:left}
+For $d\ge2$,
+\[
+  \fDelta(d,m)=dm\quad(0\le m<d),\qquad
+  \fDelta(d,d)=d^2+1.
+\]
+\end{proposition}
+
+\begin{proof}
+If $m<d$, \cref{lem:component-lower} leaves only stars in a normalized
+extremal graph. If $m=d$, there is at most one non-star component, and it
+has matching number $d$. Its edge count is at most $d^2+1$ by
+\cref{lem:fc-order-bound}. These bounds are attained by $m$ stars, and by
+$B_{d,d}$ from \cref{input:construction}, respectively. For $d=2$, the latter
+construction is replaced by $C_5$. These are the endpoint arguments
+of~\cite[Theorems~3.3, 3.4]{AEY2022}.
+\end{proof}
+
+\subsection{The threshold and the upper limit on component size}
+
+We retain one construction theorem from~\cite[Proposition~4.3]{AEY2022}:
+for every $d\ge2$ there is a triangle-free factor-critical graph with the
+threshold degree profile and matching number
+\[
+  U(d)=
+  \begin{cases}
+    \floor{5d/4},&d\text{ even},\\
+    \floor{5(d+1)/4},&d\text{ odd}.
+  \end{cases}
+\]
+These are the graphs denoted $B_d$ in that paper. We use their existence,
+not a claim that they realize the least threshold in every degree.
+This is the only problem-specific construction theorem used below whose
+proof is not reproduced in this draft.
+It follows that $Z(d)$ exists. Let $C_d$ be a graph attaining this least
+threshold. Its degree profile gives
+\[
+  e(C_d)=dZ(d)+\floor{d/2}.
+\]
+
+\begin{proposition}\label{input:Z}
+For all $d\ge2$,
+\[
+  d\le Z(d)\le U(d)<2d.
+\]
+Moreover, $Z(d)\ge d+1$ for $d\ge4$, $Z(d)=\floor{5d/4}$ for even $d$,
+and $Z(3)=3$, $Z(5)=6$.
+\end{proposition}
+
+\begin{proof}
+A threshold graph of matching number $j<d$ would have $dj+\floor{d/2}>dj$
+edges, contrary to \cref{input:left}. If $d\ge4$, one of matching number
+$d$ would have more than $d^2+1$ edges, also impossible. This proves the
+lower bounds; existence of the cited construction gives $Z(d)\le U(d)<2d$.
+
+For even $d$, apply the Andr\'asfai--Erd\H{o}s--S\'os theorem in the form
+that every triangle-free graph on $n$ vertices with minimum degree greater
+than $2n/5$ is bipartite; see~\cite{AES1974} and
+\cite[Corollary~2.6]{AEY2022}.
+The factor-critical threshold graph is nonbipartite and $d$-regular, so
+$5d\le4Z(d)+2$. Since $d$ is even, this gives
+$Z(d)\ge\floor{5d/4}$, as in~\cite[Lemma~4.7]{AEY2022}.
+Finally, $B_{3,3}$ and $B_{5,6}$ from \cref{input:construction} have the
+required almost-regular profiles, attaining the corresponding lower bounds.
+\end{proof}
+
+\begin{proposition}[Component reduction]\label{input:structure}
+For every $d\ge2$ and $m\ge0$, an extremal graph can be chosen with each
+component either a $d$-star or a factor-critical extremal graph of matching
+number $j$ satisfying $d\le j\le Z(d)$.
+\end{proposition}
+
+\begin{proof}
+Only the upper limit remains after \cref{lem:star-reduction,lem:component-lower}.
+If a non-star component $H$ has matching number $j>Z(d)$, then
+\[
+  e(H)\le dj+\floor{d/2}.
+\]
+Replacing it by $C_d$ and $j-Z(d)$ stars attains that many edges and increases
+the number of star components, contradicting normalization. This is the
+argument of~\cite[Lemma~4.5]{AEY2022}.
+\end{proof}
+
+\begin{proposition}\label{input:threshold}
+For every $d\ge2$,
+\[
+  \fDelta(d,Z(d))=dZ(d)+\floor{d/2}.
+\]
+\end{proposition}
+
+\begin{proof}
+The graph $C_d$ attains the stated value. Since $Z(d)<2d$, a normalized
+extremal graph has at most one non-star component. If its matching number
+is $j$, degree summation bounds its edges by $dj+\floor{d/2}$; the stars
+contribute at most $d(Z(d)-j)$. If there is no such component, the bound is
+immediate. This is the threshold case of~\cite[Theorem~4.8]{AEY2022}.
+\end{proof}
+
+\subsection{Deficiency notation}
+
+For the new fixed-order argument, write
+\[
+  i=d+t,\qquad n=2i+1=2d+2t+1,\qquad
+  L=di+t+1=d(d+t)+t+1.
+\]
+For any graph with maximum degree at most $d$, put
+\[
+  \epsilon(v)=d-\deg(v),\qquad D(G)=\sum_v\epsilon(v)=dn-2e(G).
+\]
+Then
+\begin{equation}\label{eq:target-deficiency}
+  e(G)\le L\quad\Longleftrightarrow\quad D(G)\ge d-2t-2.
+\end{equation}
+The deficiency is nonnegative and has the same parity as $d$, because $n$
+is odd.
+
+\section{A saturated five-cycle}\label{sec:saturated-cycle}
+
+The following symmetrization supplies the saturated cycle needed by the structural argument.
+
+\begin{lemma}[Saturated five-cycle]\label{lem:saturated-cycle}
+Let $d\ge7$ and $1\le t<d$. Suppose that $G$ is a triangle-free graph on
+$n=2d+2t+1$ vertices, with $\Delta(G)\le d$. If $e(G)>L$, then $G$ contains
+an induced $5$-cycle all of whose vertices have degree $d$.
+\end{lemma}
+
+\begin{proof}
+Since the edge count is integral, the counterexample assumption and
+\cref{eq:target-deficiency} give
+\begin{equation}\label{eq:counter-deficiency}
+  D(G)\le d-2t-4.
+\end{equation}
+If $G$ is bipartite, its smaller part has at most $d+t$ vertices. Summing
+degrees over this part gives $e(G)\le d(d+t)<L$, a contradiction. Thus $G$ is
+not bipartite.
+
+Let $C$ be a shortest odd cycle, of length $\ell$. It is induced. Every
+vertex outside $C$ has at most two neighbors on $C$. Indeed, suppose that an
+outside vertex has at least three such neighbors. The cyclic gaps between
+successive neighbors have length at least two, because $G$ is triangle-free.
+At least one gap is odd, and among at least three gaps such an odd gap has
+length at most $\ell-4$. That gap together with the two incident edges from
+the outside vertex gives a shorter odd cycle.
+
+Every vertex of $G$ therefore sends at most two incidences into $C$, and hence
+\[
+  \sum_{v\in C}\deg(v)\le2n.
+\]
+It follows that
+\[
+  D(G)\ge\sum_{v\in C}(d-\deg(v))\ge \ell d-2n.
+\]
+If $\ell\ge7$, then
+\[
+  D(G)\ge3d-4t-2>d-2t-4,
+\]
+where the strict inequality is $2(d-t+1)>0$. This contradicts
+\cref{eq:counter-deficiency}. Triangle-freeness excludes $\ell=3$, so $G$
+contains a $5$-cycle.
+
+Choose a $5$-cycle
+\[
+  C=c_0c_1c_2c_3c_4c_0
+\]
+maximizing $\sum_{j=0}^4\deg(c_j)$. Indices are read modulo five. Every
+outside vertex has at most two neighbors on $C$. Let $R$ be the set of outside
+vertices with fewer than two neighbors on $C$, and put
+\[
+  q=\sum_{x\in R}\bigl(2-|\N(x)\cap C|\bigr),
+  \qquad r=|R|.
+\]
+Thus $r\le q$. Let $D_C$ and $D_{\mathrm{out}}$ be the sums of the
+deficiencies on and outside $C$. Counting incidences with $C$ gives
+\begin{equation}\label{eq:cycle-deficiency}
+  D_C=5d-2n+q,
+  \qquad
+  q+D_{\mathrm{out}}=D(G)-5d+2n\le2t-2.
+\end{equation}
+
+For each $j$, let $A_j$ consist of $c_j$ and every outside vertex whose two
+neighbors on $C$ are $c_{j-1}$ and $c_{j+1}$. These five sets partition
+$V(G)\setminus R$. Write
+\[
+  a_j=|A_j|,
+  \qquad
+  b_j=|\N(c_j)\cap R|.
+\]
+The definition of the bags gives
+\[
+  \deg(c_j)=a_{j-1}+a_{j+1}+b_j.
+\]
+Adding this identity for $j+2$ and $j+3$ yields
+\begin{align}
+  a_j
+    &=n-r-\deg(c_{j+2})-\deg(c_{j+3})+b_{j+2}+b_{j+3}\notag\\
+    &\ge2t+1-r.\label{eq:bag-lower}
+\end{align}
+Consequently,
+\[
+  |A_j\setminus\{c_j\}|\ge2t-r>D_{\mathrm{out}},
+\]
+where the strict inequality follows from \cref{eq:cycle-deficiency} and
+$q\ge r$. Every vertex of degree less than $d$ contributes at least one to
+$D_{\mathrm{out}}$. Therefore $A_j\setminus\{c_j\}$ contains a vertex $x_j$
+of degree $d$. Replacing $c_j$ by $x_j$ produces another $5$-cycle. The
+maximal choice of $C$ now implies $\deg(c_j)=d$. This holds for every $j$.
+\end{proof}
+
+The bags $A_j$ are independent. Moreover, edges between distinct bags can
+occur only between consecutive bags: vertices in any forbidden pair share a
+neighbor on $C$, so an edge between them would create a triangle.
+
+\section{Stability around a saturated five-cycle}\label{sec:hard-case}
+
+The natural parameter is the \emph{cycle excess}
+\[
+  q=2n-5d.
+\]
+For a saturated five-cycle, this is exactly the number of missing incidences
+into the cycle:
+\[
+  q=\sum_{x\in R}(2-|\N(x)\cap C|).
+\]
+In particular, $q\ge0$. The original bags already form a subgraph of a
+blow-up of $C_5$; the question is whether the exceptional vertices can be
+assigned to the same five positions.
+
+We prove a structural statement for arbitrary order $n$, independent of the
+matching-number problem. Put
+\[
+  T=8d-3n.
+\]
+This quantity is the deficiency forced by an eight-vertex subgraph with
+independence number three: each graph vertex sends at most three incidences
+into that subgraph.
+
+\begin{theorem}[Saturated-cycle stability]\label{thm:stability}
+Let $G$ be a triangle-free graph on $n$ vertices with $\Delta(G)\le d$,
+containing a five-cycle $C=c_0c_1c_2c_3c_4c_0$ whose vertices all have
+degree $d$. Set $D=dn-2e(G)$, $q=2n-5d$, and $T=8d-3n$.
+If either
+\[
+  D<T,
+  \qquad\text{or}\qquad
+  D\le T,\quad T>0,\quad q\ge2,
+\]
+then there is a homomorphism $G\to C_5$ taking $c_j$ to $j$.
+\end{theorem}
+
+The saturated-cycle hypothesis is essential to the scope of this statement:
+we do not claim here that every graph near the extremal edge count has such
+a cycle. The theorem itself has examples, such as balanced complete blow-ups
+of $C_5$, for which $D=q=0$ and $T>0$.
+
+\subsection{The two local obstructions}
+
+Two ways of failing to extend the bag assignment lead to the same graph $H$.
+It has distinct vertices $a,b,u,v,p_1,p_2,x_1,x_2$, the four edges between
+$\{a,b\}$ and $\{u,v\}$, and the two paths
+\[
+  a-p_1-p_2-b,\qquad u-x_1-x_2-v.
+\]
+Its independence number is three. An independent set cannot meet both
+$\{a,b\}$ and $\{u,v\}$. If it meets their union once, the edges $p_1p_2$
+and $x_1x_2$
+allow at most two further vertices; if it avoids the union, they allow at
+most two. If it contains both $a,b$, it excludes $p_1,p_2$ and contains at
+most one of $x_1,x_2$; the case of $u,v$ is symmetric.
+
+A triangle-free supergraph of $H$ on these eight vertices may add edges only
+between $\{p_1,p_2\}$ and $\{x_1,x_2\}$, and the added edges form a matching.
+Adding two gives the eight-vertex M\"obius ladder $M$, the graph on
+$\Z/8\Z$ with differences $1$, $4$, or $7$ adjacent. Thus $M$ arises as the
+unique two-edge augmentation, up to isomorphism, of the obstruction to
+extending the coloring.
+
+The graph $M$ is triangle-free and $3$-regular. Its independence number is
+three, and its independent triples are precisely the neighborhoods
+\[
+  \{j-1,j+1,j+4\},\qquad j\in\Z/8\Z.
+\]
+Indeed, an independent four-set in the $8$-cycle must be alternating, and
+both alternating sets contain an opposite chord. For an independent triple,
+the cyclic gaps are at least two and sum to eight. The gap pattern $(2,2,4)$
+contains an opposite chord; $(2,3,3)$ gives the displayed neighborhoods.
+Distinct nonadjacent vertices of $M$ have a common neighbor.
+
+\begin{lemma}[Obstruction cost and equality]\label{lem:no-mobius}
+Every copy of $M$ in $G$ forces $D\ge T$. If $T>0$ and $q\ge2$, equality
+$D=T$ is impossible.
+\end{lemma}
+
+\begin{proof}
+Let $S$ be the eight vertices of a copy. Every $\N(x)\cap S$ is independent
+in $M$, so has size at most three. Therefore
+\[
+  D_S:=\sum_{v\in S}(d-\deg_G(v))\ge8d-3n=T.
+\]
+If $D=T$, equality holds throughout: all deficiency lies on $S$, every
+vertex outside $S$ has degree $d$, and every vertex has exactly three
+neighbors in $S$. In particular, $G[S]=M$.
+
+Partition $V(G)$ into bags $B_j$ according to the neighborhood
+$\{j-1,j+1,j+4\}$ in $S$, with $j\in B_j$. Put $a_j=|B_j|$ and
+$\delta_j=d-\deg_G(j)$. The common-neighbor property makes every bag
+independent and permits edges between bags only along edges of $M$. Also
+\[
+  \deg_G(j)=a_{j-1}+a_{j+1}+a_{j+4}.
+\]
+Adding this identity at $j-1,j,j+1$ counts every bag once and $B_j$ twice,
+so
+\[
+  a_j=3d-n-(\delta_{j-1}+\delta_j+\delta_{j+1})
+  \ge3d-n-D_S=2n-5d=q.
+\]
+If $q\ge2$, each bag contains a vertex outside $S$. That vertex is saturated
+and has no more possible neighbors than $j$, forcing $\deg_G(j)=d$.
+Thus all of $S$ is saturated, contradicting $D_S=T>0$.
+\end{proof}
+
+\begin{lemma}\label{lem:no-H}
+If $G$ contains no $M$, every copy of $H$ forces $D\ge T+2$.
+\end{lemma}
+
+\begin{proof}
+On the vertex set $S$ of a copy of $H$, at most one edge can be added:
+two added edges would give $M$. Hence $e(G[S])\le11$. Every outside
+vertex has at most three neighbors in $S$, giving
+\[
+  \sum_{v\in S}\deg_G(v)\le22+3(n-8)=3n-2.
+\]
+Consequently $D\ge D_S\ge8d-3n+2=T+2$.
+\end{proof}
+
+\subsection{Extending the cycle coloring}
+
+\begin{lemma}[Extension criterion]\label{lem:extension}
+If $G$ contains a saturated five-cycle, contains no $H$, and $D\le T$,
+then its natural bag assignment extends to a homomorphism $G\to C_5$.
+\end{lemma}
+
+\begin{proof}
+Use the bags $A_j$ and exceptional set $R$ of
+\cref{sec:saturated-cycle}, and write $r=|R|$ and
+$b_j=|\N(c_j)\cap R|$. Saturation gives
+\[
+  r\le q,\qquad \sum_jb_j=2r-q.
+\]
+The exact bag identity therefore yields the uniform bound
+\begin{equation}\label{eq:hard-bag-size}
+  a_j=n-r-2d+b_{j+2}+b_{j+3}\le n-2d.
+\end{equation}
+Indeed, $b_{j+2}+b_{j+3}\le2r-q\le r$.
+
+No $x\in R$ can have neighbors in consecutive bags. Otherwise, after
+relabeling, choose $u\in A_0$ and $v\in A_1$ adjacent to $x$. There is a
+copy of $H$ with
+\[
+  (a,b,u_H,v_H,p_1,p_2,x_1,x_2)
+  =(c_0,c_2,v,c_1,c_4,c_3,x,u).
+\]
+The two paths are $c_0-c_4-c_3-c_2$ and $v-x-u-c_1$, and the four cross-edges
+come from the bag definitions. The vertices are distinct: $u=c_0$ or
+$v=c_1$ would create a triangle with $x$.
+
+For every $x\in R$, the deficiency bound gives
+\begin{equation}\label{eq:R-neighbors}
+  |\N(x)\setminus R|
+  \ge d-D-r+1
+  \ge d-T-q+1=n-2d+1.
+\end{equation}
+This exceeds the size of any one bag. Its occupied positions form an
+independent set in $C_5$, so $x$ meets exactly two nonconsecutive bags.
+Assign $x$ to their unique common neighboring position.
+
+Only edges inside $R$ remain to check. If an edge $xy$ has equal or
+nonadjacent assigned positions, the two occupied bag-pairs share a bag
+$A_j$. Choose $u\in\N(x)\cap A_j$ and $v\in\N(y)\cap A_j$.
+Triangle-freeness gives $u\ne v$. The vertices $x,y,u,v$ and the four cycle
+vertices other than $c_j$ contain $H$, with
+\[
+  (a,b,u_H,v_H,p_1,p_2,x_1,x_2)
+  =(c_{j-1},c_{j+1},u,v,c_{j-2},c_{j+2},x,y).
+\]
+They are distinct even if $u$ or $v$ equals $c_j$, since $c_j$ was omitted.
+This contradiction proves that every edge maps to an edge of $C_5$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:stability}]
+Under either hypothesis, \cref{lem:no-mobius} excludes $M$.
+Since $D\le T$, \cref{lem:no-H} then excludes $H$, and
+\cref{lem:extension} extends the coloring.
+\end{proof}
+
+\section{Odd excess costs deficiency}\label{sec:capacity}
+
+Once the coloring is available, the excess has a second interpretation.
+Let $B_0,\ldots,B_4$ be its color classes, each containing the corresponding
+saturated cycle vertex, and set
+\[
+  s_j=|B_j|,\qquad
+  p_j=s_{j-1}+s_{j+1}-d,\qquad h=n-2d.
+\]
+Saturation ensures $p_j\ge0$. Direct summation gives
+\begin{equation}\label{eq:potential-identities}
+  \sum_jp_j=q,\qquad s_j=h-p_{j+2}-p_{j+3}.
+\end{equation}
+Thus the same excess $q$ counts both the original missing cycle incidences
+and the surplus neighboring capacity after coloring.
+
+Let $F$ be the complete blow-up on these classes, put
+$\mu=e(F)-e(G)$, and write $w_j=s_jp_j$ and $W=\sum_jw_j$.
+Every vertex in $B_j$ has $d+p_j$ possible neighbors, so
+\begin{equation}\label{eq:missing-deficiency}
+  D=2\mu-W.
+\end{equation}
+For any independent set $I$ of cycle positions, a missing edge has at most
+one endpoint in its classes. Since at least $w_j$ incidences are missing
+from $B_j$,
+\begin{equation}\label{eq:independent-potential}
+  D\ge2\sum_{j\in I}w_j-W.
+\end{equation}
+
+The following argument replaces the capacity table. It applies more
+generally whenever the positions with positive excess have bipartite support.
+
+\begin{lemma}[Odd excess imbalance]\label{lem:odd-excess}
+Suppose $p_j$ are nonnegative integers with odd sum $q=2k-1>0$, and
+the subgraph of $C_5$ on $\{j:p_j>0\}$ is bipartite. If $h\ge q$ and
+$w_j=p_j(h-p_{j+2}-p_{j+3})$, then some independent set $I$ satisfies
+\[
+  2\sum_{j\in I}w_j-\sum_jw_j\ge h-k(k-1).
+\]
+In particular, for $q=1$ or $q=3$, \cref{eq:independent-potential} gives
+$D\ge h$ or $D\ge h-2$, respectively.
+\end{lemma}
+
+\begin{proof}
+Bipartition the positive support into independent sets $I,J$, choosing
+$I$ to have larger total $p$-weight. Put $P=\sum_{j\in I}p_j$; integrality
+and oddness give $k\le P\le q$.
+
+Expand the difference of the two $w$-weights. Products $p_ip_j$ from
+nonadjacent positions on opposite sides cancel. Those within $J$ have
+positive sign and may be discarded. Those within $I$ cost at most
+\[
+  2\sum_{\{i,j\}\subseteq I}p_ip_j
+  =P^2-\sum_{i\in I}p_i^2\le P(P-1),
+\]
+because the $p_i$ are integers. Therefore
+\[
+  2\sum_{j\in I}w_j-W
+  \ge h(2P-q)-P(P-1)\ge h-k(k-1).
+\]
+The last inequality follows from
+\[
+  h(2P-q)-P(P-1)-\bigl(h-k(k-1)\bigr)
+  =(P-k)(2h-P-k+1)\ge0,
+\]
+using $P\ge k$ and $P,k\le q\le h$.
+For $q\le3$, the positive support has at most three positions, so it is
+automatically bipartite.
+\end{proof}
+
+\section{The fixed-order bound}\label{sec:direct-cases}
+
+We now apply the structural and capacity statements with
+$n=2d+2t+1$. The relevant parameters are
+\begin{equation}\label{eq:excess-parameters}
+  q=4t+2-d,\qquad h=2t+1,\qquad
+  T=2d-6t-3.
+\end{equation}
+
+\begin{proposition}\label{prop:excess-bound}
+Let $d\ge7$ and $1\le t<d$. If $q=4t+2-d$ is negative, one, or three,
+then every triangle-free graph on $2d+2t+1$ vertices with maximum degree
+at most $d$ has at most $L=d(d+t)+t+1$ edges.
+\end{proposition}
+
+\begin{proof}
+A counterexample has a saturated five-cycle by \cref{lem:saturated-cycle}.
+Hence $q\ge0$, disposing of negative excess. Moreover,
+\begin{equation}\label{eq:excess-budget}
+  D\le d-2t-4=T+q-3.
+\end{equation}
+If $q=1$, then $D\le T-2<T$. If $q=3$, then $d=4t-1$ and
+$D\le T=2t-5$. Nonnegativity of $D$ forces $t\ge3$, so $T>0$.
+In either case \cref{thm:stability} gives a homomorphism to $C_5$
+preserving the saturated cycle. Since $h=2t+1\ge q$, the odd excess
+imbalance gives, in both cases,
+\[
+  D\ge h-(q-1)=2t+2-q.
+\]
+But \cref{eq:excess-budget} also reads $D\le2t-2-q$, a contradiction.
+\end{proof}
+
+\section{Determining the threshold}\label{sec:exact-threshold}
+
+We identify the least threshold before using it in the general formula.
+The following argument applies the fixed-order proposition directly, without
+assuming the desired value of $Z(d)$.
+
+\begin{proposition}\label{cor:odd-Z}
+For odd $d\ge9$,
+\[
+  Z(d)=\floor{\frac{5(d+1)}4}.
+\]
+\end{proposition}
+
+\begin{proof}
+The upper bound is \cref{input:Z}. Suppose a threshold graph occurs at
+matching number $j<U(d)$. The same proposition gives $j\ge d+1$.
+Write $j=d+t$. Since $j<U(d)$, we have $4t\le d+1$ and $t<d$.
+The odd integer $q=4t+2-d$ is at most three, so it is negative, one, or
+three. By \cref{prop:excess-bound}, the graph has deficiency at least
+\[
+  d-2t-2\ge(d-5)/2\ge2.
+\]
+Its threshold degree profile has deficiency one, a contradiction.
+\end{proof}
+
+\begin{lemma}\label{lem:seven-threshold}
+We have $Z(7)=9$.
+\end{lemma}
+
+\begin{proof}
+The construction $B_{7,9}$ from \cref{input:construction}, with $t=2$,
+is triangle-free and factor-critical, with eighteen vertices of degree
+seven and one of degree six. It therefore gives $Z(7)\le9$ directly.
+
+For the reverse bound, \cref{input:Z} gives $Z(7)\ge8$. A threshold graph
+of matching number eight would have seventeen vertices and
+$(7\cdot17-1)/2=59$ edges. But \cref{prop:excess-bound}, with $d=7,t=1$,
+allows at most $7\cdot8+2=58$. Thus $Z(7)=9$.
+\end{proof}
+
+\begin{proposition}[Explicit threshold]\label{prop:explicit-Z}
+For every $d\ge2$, $Z(d)=z_d$, where $z_d$ is defined in
+\cref{eq:explicit-threshold}.
+\end{proposition}
+
+\begin{proof}
+Combine the even-degree and small odd values of \cref{input:Z} with
+\cref{cor:odd-Z,lem:seven-threshold}.
+\end{proof}
+
+\section{The intermediate component bound}\label{sec:conj21}
+
+\begin{theorem}\label{thm:fixed-order}
+Let $d\ge7$ and $d<i<Z(d)$. Every triangle-free graph on $2i+1$ vertices
+with maximum degree at most $d$ has at most $di+i-d+1$ edges.
+\end{theorem}
+
+\begin{proof}
+Write $i=d+t$; \cref{input:Z} gives $1\le t<d$.
+If $d$ is even, $i<\floor{5d/4}$ implies $4i\le5d-4$, so
+$q=4i+2-5d\le-2$.
+If $d$ is odd, $i<\floor{5(d+1)/4}$ implies $4i\le5d+1$,
+so $q\le3$ and $q$ is odd.
+In either case \cref{prop:excess-bound} applies.
+\end{proof}
+
+\begin{proposition}[Intermediate value]\label{thm:conj21}
+For $7\le d<i<Z(d)$,
+\[
+  \fDelta(d,i)=di+i-d+1.
+\]
+\end{proposition}
+
+\begin{proof}
+Write $i=d+t$ and use the normalized graph of \cref{input:structure}.
+Since $i<2d$, there is at most one non-star component. If there is none,
+there are at most $di$ edges. Otherwise let its matching number be
+$j=d+s\le i$. For $s=0$, \cref{input:left} gives at most $dj+1$ edges;
+for $s>0$, \cref{thm:fixed-order} gives at most $dj+s+1$.
+Together with the stars this is at most
+\[
+  di+s+1\le di+t+1.
+\]
+
+For attainment, the bounds $i<U(d)$ imply $2t+2\le d$ when $d\ge7$.
+Explicitly, $4t\le d-4$ for even $d$, and $4t\le d+1$ for odd $d$.
+Thus \cref{input:construction} supplies $B_{d,d+t}$ with the stated value.
+\end{proof}
+
+\begin{remark}
+The fixed-order theorem requires no factor-criticality assumption. The
+component reduction uses this stronger conclusion only on odd-order
+factor-critical components.
+\end{remark}
+
+\section{The general formula as a packing theorem}\label{sec:packing}
+
+For $d\ge4$, the component bounds above reduce all matching bounds to one
+packing problem. Set
+\[
+  z=Z(d),
+  \qquad
+  b=\floor{d/2}.
+\]
+The explicit threshold values in \cref{prop:explicit-Z} imply
+\begin{equation}\label{eq:threshold-bounds}
+  d<z<2d,
+  \qquad
+  z\le d+b-1.
+\end{equation}
+
+Relative to the baseline $dm$, a component of matching number $j$ has utility
+\[
+  u(j)=
+  \begin{cases}
+    j-d+1,&d\le j<z,\\
+    b,&j=z.
+  \end{cases}
+\]
+At $j=d$, the first line follows from \cref{input:left}; for $d<j<z$,
+it follows from \cref{thm:conj21}. This interval is empty for $d=4,5,6$,
+since then $z=d+1$. The second line follows from \cref{input:threshold}.
+Stars have zero utility and fill unused matching capacity. This reduction
+is the component-packing viewpoint of~\cite[Lemma~4.9]{AEY2022}; the
+normalization below proves the needed optimization directly.
+
+\begin{lemma}[Packing normalization]\label{lem:packing}
+Any feasible list of component weights in $[d,z]$ can be replaced, without
+increasing its total weight or decreasing its utility, by a list containing as
+many weight-$z$ components as the capacity permits and at most one component
+of weight below $z$.
+\end{lemma}
+
+\begin{proof}
+Take two weights $a,c<z$, and put $s=a+c$. Since $s\ge2d>z$, replace them by
+one weight-$z$ component. If $s-z\ge d$, add a component of weight $s-z$;
+otherwise fill the remaining capacity with stars. The total weight does not
+increase.
+
+If $s-z\ge d$, the utility gain is
+\[
+  b+(s-z-d+1)-(s-2d+2)=b+d-z-1\ge0
+\]
+by \cref{eq:threshold-bounds}. If $s-z<d$, then $s\le z+d-1$ and the old
+utility is
+\[
+  s-2d+2\le z-d+1\le b.
+\]
+Thus the replacement never decreases utility and strictly decreases the
+number of sub-threshold components. Repetition leaves at most one.
+
+Now write the total capacity as $m=kz+r$, with $0\le r<z$, and suppose the
+normalized list contains $k'<k$ weight-$z$ components. Discard its one smaller
+component if present and add one weight-$z$ component. The new weight is
+$(k'+1)z\le kz\le m$, and the utility does not decrease because $u(j)\le b$
+for every $j<z$. Repeating gives exactly $k$ threshold components. The
+remaining capacity is $r$, in which at most one residual component can be
+placed.
+\end{proof}
+
+\begin{proof}[Proof of \cref{thm:main}]
+First \cref{prop:explicit-Z} identifies $Z(d)=z_d$.
+
+For $d=2,3$, this threshold equals $d$. By \cref{input:structure}, every
+non-star component of a normalized extremal graph has matching number $d$,
+and contributes at most $d^2+\floor{d/2}$ edges. Hence at most
+$\floor{m/d}$ such components can occur, giving
+\[
+  \fDelta(d,m)\le dm+\floor{m/d}\floor{d/2}.
+\]
+This is attained by that many copies of $C_d$ and the remaining stars.
+It agrees with \cref{eq:main-formula}, since $r<z_d=d$.
+
+Now let $d\ge4$ and $m=kz_d+r$. The component reduction and
+\cref{lem:packing} give $k$ threshold components and at most one residual
+non-star component in an optimal packing. If $r<d$, the residual utility is
+zero. If $r\ge d$, it is at most $r-d+1$. Therefore
+\[
+  \fDelta(d,m)\le dm+k\floor{d/2}+\max\{0,r-d+1\}.
+\]
+
+For attainment, take $k$ copies of $C_d$. If $r<d$, add $r$ stars.
+If $r=d$, add the left-endpoint graph from \cref{input:left}.
+If $r>d$, use $B_{d,r}$ from \cref{input:construction}. This last case
+can occur only for $d\ge7$, and the parameter check in
+\cref{thm:conj21} applies. These graphs have matching number $m$ and attain
+the upper bound, completing the proof for every $m\ge0$.
+\end{proof}
+
+\section{Consequences}\label{sec:consequences}
+
+\begin{corollary}[The two conjectures]\label{thm:conj22}
+Conjectures~2.1 and~2.2 of~\cite{BET2023} hold: the intermediate value is
+$\fDelta(d,i)=di+i-d+1$ for $7\le d<i<Z(d)$, and the general formula in
+terms of $Z(d)$ holds for every $d\ge2$ and $m\ge0$.
+\end{corollary}
+
+\begin{proof}
+The first assertion is \cref{thm:conj21}. The second is \cref{thm:main}
+with $z_d=Z(d)$ from \cref{prop:explicit-Z}.
+\end{proof}
+
+\begin{corollary}\label{cor:factor-critical}
+Let $d\ge2$ and $d<m<Z(d)$. Every extremal triangle-free graph $G$ with
+$\Delta(G)\le d$, $\nu(G)=m$, and $|V(G)|=2m+1$ is factor-critical.
+\end{corollary}
+
+\begin{proof}
+If $G$ is not factor-critical, there is a vertex $v$ such that $G-v$ has no
+perfect matching. Since $G-v$ has $2m$ vertices, its matching number is at most
+$m-1$. Therefore
+\[
+  e(G)\le\fDelta(d,m-1)+d=\fDelta(d,m)-1,
+\]
+where the equality follows from \cref{thm:conj21}, including the known
+left endpoint when $m=d+1$. This contradicts extremality.
+\end{proof}
+
+\section{Verification status and points for review}\label{sec:verification}
+
+The argument above is a proof draft and has not yet been independently
+refereed. Lean 4.33.0 with Mathlib checks the following parts:
+
+\begin{itemize}
+  \item the graph argument from shortest odd cycles through the saturated
+  $5$-cycle, the $M$ and $H$ exclusions, the $C_5$-coloring, and every
+  fixed-order degree case;
+  \item the required capacity inequalities, the general stability theorem,
+  and the terminating packing normalization;
+  \item boundedness and attainment for $\fDelta(d,m)$ and $Z(d)$, the full
+  Proposition~4.1 family $B_{d,d+t}$ (order, triangle-freeness, degrees,
+  matching number, and edge count), and the factor-critical graph $B_{7,9}$
+  used for the degree-seven threshold.
+\end{itemize}
+
+The integrated mathematical proof above includes the short published
+component and endpoint arguments. The Lean development still represents
+those results, the general threshold constructions, the disjoint-union lower
+construction for the full formula, and the previously
+solved small cases through the explicit interface
+\texttt{AuditedLiteratureInputs}. Their inclusion as prose proofs here does
+not discharge those formal hypotheses. From that interface, Lean proves the
+fixed-order upper bound and the packing deduction, and derives both
+conjectures in terms of $Z(d)$. Proposition~4.1 is no longer assumed by that
+interface: Lean constructs its graph and derives the residual lower bounds
+directly; the remaining disjoint-union field takes those bounds as premises.
+The complete identification $Z(d)=z_d$ in
+\cref{prop:explicit-Z} is proved in the manuscript. Lean additionally proves
+the degree-seven case and \cref{cor:odd-Z} for every odd $d\ge9$, the latter
+from the published bounds $d+1\le Z(d)\le\floor{5(d+1)/4}$. The general Hall proof of factor-criticality in
+\cref{input:construction} remains a written proof.
+
+The complete Lean build audits the named theorems listed in
+\texttt{Audit.lean}. It contains no admitted proof, project-specific axiom,
+or native-evaluation shortcut. The reported dependencies are only Lean's
+standard foundational principles
+(``propext'', classical choice, and quotient soundness). Lean formalizes the
+weighted bipartition proof of \cref{lem:odd-excess} and uses it for the
+excess-one and excess-three capacity conclusions. The earlier finite pattern
+proofs remain as independent regression checks.
+For $B_{7,9}$, Lean checks explicit matching partners after each of the
+nineteen vertex deletions, in place of the Hall argument given above.
+The upper bound $Z(7)\le9$ has no external hypotheses; its lower bound uses
+only the general published lower bound $8\le Z(7)$.
+The formal files and the exact map from assumptions to published theorem
+numbers will accompany a later version of this draft.
+
+The main points for mathematical review are the transition from normalized
+components to the fixed-order problem, \cref{lem:saturated-cycle}, the two
+obstruction embeddings in \cref{sec:hard-case}, the odd excess imbalance,
+the threshold identification in \cref{sec:exact-threshold}, and the packing
+replacement in \cref{lem:packing}. The attribution of the integrated
+published arguments is recorded where each is used.
+
+\begin{remark}[A discrepancy in the 2023 preprint]
+The introductory discussion of~\cite{BET2023} gives $Z(9)=13$ once, whereas
+its Section~4 and computational table give $Z(9)=12$. The latter is consistent
+with the proven upper bound
+$Z(9)\le\floor{5(9+1)/4}=12$ from~\cite{AEY2022}. No argument here uses the
+value $13$. There is a second table inconsistency: Table~5 reports 148 edges
+for $(d,m)=(8,18)$, while Table~6 reports 149. The latter agrees with the
+conjectured formula and with the displayed decomposition into one
+$Z(8)$-component and one component of matching number eight.
+\end{remark}
+
+\section*{Verification files}
+
+The Lean development, the finite verification script, and the map from Lean
+inputs to published results are available at
+\url{https://github.com/erdembanak/extremal-IP/tree/master/proof}.
+
+\begin{thebibliography}{9}
+
+\bibitem{AES1974}
+B.~Andr\'asfai, P.~Erd\H{o}s, and V.~T.~S\'os,
+\newblock On the connection between chromatic number, maximal clique and
+minimal degree of a graph,
+\newblock \emph{Discrete Mathematics} 8 (1974), 205--218.
+
+\bibitem{AEY2022}
+M.~Ahanjideh, T.~Ekim, and M.~A.~Y\i ld\i z,
+\newblock Maximum size of a triangle-free graph with bounded maximum degree
+and matching number,
+\newblock \emph{arXiv preprint arXiv:2207.02271}, 2022.
+\newblock \url{https://arxiv.org/abs/2207.02271}.
+
+\bibitem{BET2023}
+A.~E.~Banak, T.~Ekim, and Z.~C.~Ta\c{s}k\i n,
+\newblock Constructing extremal triangle-free graphs using integer
+programming,
+\newblock \emph{arXiv preprint arXiv:2304.01729}, 2023.
+\newblock \url{https://arxiv.org/abs/2304.01729}.
+
+\end{thebibliography}
+
+\end{document}

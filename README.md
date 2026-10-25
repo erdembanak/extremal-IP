@@ -14,6 +14,8 @@ maximum degree and matching number.
 - [`cp_sat/RESULTS.md`](cp_sat/RESULTS.md): the four-graph subset relevant to
   the independence-number-two Earth–Moon reduction; its graphs and
   solver-compatible cone inputs are in [`cp_sat/data/`](cp_sat/data/README.md).
+- [`proof/`](proof/README.md): a proof of the general f_Δ(d,m) formula and the
+  odd-degree thresholds Z(d), with a Lean 4 formalization and finite checks.
 
 ## Catalogue without an independence restriction
 
